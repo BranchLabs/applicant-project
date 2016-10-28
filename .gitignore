@@ -1,2 +1,4 @@
 *.sql
 *.log
+*.conf
+config/
