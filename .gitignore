@@ -1,0 +1,5 @@
+*.sql
+*.log
+*.conf
+config/
+magento/
