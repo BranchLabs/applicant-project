@@ -64,6 +64,22 @@ class Database {
     return $stmt->fetch(PDO::FETCH_ASSOC); // based on requirements we are only ever fetching a single row
   }
 
+
+  /**
+   * Writes to the database
+   *
+   * @return boolean
+   * @author David Cajio
+   */
+  public function write($query, $params = array()) {
+    $stmt = Database::prepare($query, $params);
+    $result = $stmt->execute($params);
+
+    // we can check the value of $result and do some error handling
+    // but that is beyond the scope of this excercise, just return the value
+    return $result;
+  }
+
   /**
    * Connects to the DB
    *

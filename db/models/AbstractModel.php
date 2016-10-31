@@ -17,7 +17,7 @@ class AbstractModel {
    *
    * @var array
    */
-  private $_record = null;
+  private $_record = array();
 
   /**
    * Saves a record
@@ -25,7 +25,95 @@ class AbstractModel {
    * @author David Cajio
    */
   public function save() {
+    // Modified to use ON DUPLICATE KEY UPDATE
+    // Especially since it makes it easier than checking for the
+    // $_pk value via code, let the DB handle it
+    //
+    // This is acceptable because the requirements specifically state
+    // composite primary keys will not need to be used and all models use
+    // a single primary key
+    //
+    /*
+    if (!$this->_record['id']) {
+      // insert the record
+      $this->_insert();
+    } else {
+      // update the record
+      $this->_update();
+    }
+     */
+
+    $query = "INSERT INTO `%s` (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s";
+    $params = $this->_getPreppedParams();
+
+    // since this is a simple ORM, just return the boolean value
+    return Database::write(sprintf($query, $this->_table,
+      implode(",", $params['keys']),
+      implode(",", $this->_insertValuesPDO($params['values'])),
+      implode(",", $this->_onDuplicateKeyUpdates($params['keys']))), $params['values']);
+
   }
+
+
+  /**
+   * Returns an array of ?'s based on the count of the values
+   * array provided
+   *
+   * @return array
+   * @author David Cajio
+   */
+  private function _insertValuesPDO($arr) {
+    $size = count($arr);
+    $insert_values = new SplFixedArray($size);
+
+    for ($x=0 ; $x<$size ; $x++) {
+      $insert_values[$x] = "?";
+    }
+
+    print_r($insert_values);
+    return $insert_values->toArray();
+  }
+
+  /**
+   * Formats SQL for on duplicate key update
+   *
+   * @return string
+   * @author David Cajio
+   */
+  private function _onDuplicateKeyUpdates($keys) {
+    $result = array();
+
+    // Cycle the keys and give them SQL friendly values
+    foreach ($keys as $_key) {
+      $result[] = $_key . "=VALUES(" . $_key . ")";
+    }
+
+    return $result;
+  }
+
+  /**
+   * Gets an array of values needed to formulate a proper insert
+   *
+   * @return mixed
+   * @author David Cajio
+   */
+  private function _getPreppedParams() {
+    $params = array();
+
+    // First we need to just the values
+    $params['values'] = array();
+
+    // Second we need just the keys
+    $params['keys'] = array();
+
+    foreach ($this->_record as $_key => $_value) {
+      $params['values'][] = $_value;
+      $params['keys'][] = "`" . $_key . "`";
+    }
+
+    return $params;
+  }
+
 
   /**
    * Loads a document by ID
@@ -50,8 +138,6 @@ class AbstractModel {
     }
 
     return $this; // because we want to be able to chain calls
-
-    //return Database::execute(sprintf($query, $this->_table, $this->_pk, $id)); // changed this to use PDO instead (Dave Cajio)
   }
 
   /**
@@ -64,7 +150,7 @@ class AbstractModel {
     // If we have an ID, then delete that record
     if ($id) return $this->_deleteById($id);
 
-    return $this->_delete();
+    return $this->_delete(); // delete is not chainable since it ends the record, do not return $this
   }
 
   /**
@@ -112,6 +198,47 @@ class AbstractModel {
    * @author David Cajio
    */
   public function setData($arr, $value = false) {
+    switch (gettype($arr)) {
+      case "array":
+        return $this->_setDataArr($arr); // value should be ignored
+        break;
+
+      case "string":
+        return $this->_setDataKey($arr, $value);
+        break;
+
+      default:
+        throw new Exception("Invalid data supplied for setData, arr must be an array of values or a string key");
+    }
+  }
+
+  /**
+   * Sets values based on a key=>value array
+   *
+   * @return this
+   * @author David Cajio
+   */
+  private function _setDataArr($arr) {
+    // we can only have gotten here if arr == array, so no need to check if it is an array
+    foreach ($arr as $_key => $_val) {
+      // we are using PDO so we can safely let PDO deal with mysql_escape
+      $this->_record[$_key] = $_val;
+    }
+
+    return $this;
+  }
+
+
+  /**
+   * Sets a single value in the record based on key => val
+   *
+   * @return this
+   * @author David Cajio
+   */
+  private function _setDataKey($key, $val) {
+    $this->_record[$key] = $val;
+
+    return $this;
   }
 
 } // END class AbstractModel
