@@ -169,7 +169,11 @@ class AbstractModel {
     // If we have an ID, then delete that record
     if ($id) return $this->_deleteById($id);
 
-    return $this->_delete(); // delete is not chainable since it ends the record, do not return $this
+    $result = $this->_delete(); // delete is not chainable since it ends the record, do not return $this
+
+    // we could check result, see if the delete executed correctly, but this excercise is
+    // simple, so we won't go down that path
+    return $result;
   }
 
   /**
@@ -178,6 +182,28 @@ class AbstractModel {
    * @author David Cajio
    */
   private function _delete() {
+    if (!array_key_exists($this->_pk, $this->_record)) {
+      throw new Exception("Cannot delete a record without an id");
+    }
+
+    $query = "DELETE FROM `%s` WHERE `%s`= %d";
+    $parsed = sprintf($query, $this->_table, $this->_pk, $this->_record['id']);
+    $result = Database::write($parsed);
+
+    $this->_record = array(); // reset our record, whether fail or not
+    return $result['result'];
+  }
+
+  /**
+   * Deletes a record by ID
+   *
+   * @return boolean
+   * @author David Cajio
+   */
+  private function _deleteById($id) {
+    $this->_record = array();
+    $this->_record[$this->_pk] = $id;
+    return $this->_delete();
   }
 
   /**
