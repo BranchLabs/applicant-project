@@ -10,7 +10,7 @@
  * @author David Cajio
  */
 require_once(dirname(__FILE__) . "/Database.php");
-abstract class AbstractModel {
+class AbstractModel {
 
   /**
    * Blank record, nothing loaded yet
