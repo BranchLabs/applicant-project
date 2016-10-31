@@ -26,7 +26,7 @@ class S3Now_CustomORM_IndexController extends Mage_Core_Controller_Front_Action{
      */
     public function ViewAction() {
 	  $this->loadLayout();
-	  $this->getLayout()->getBlock("head")->setTitle($this->__("ORM Test"));
+	  $this->getLayout()->getBlock("head")->setTitle($this->__("ORM Test View"));
 	        $breadcrumbs = $this->getLayout()->getBlock("breadcrumbs");
       $breadcrumbs->addCrumb("home", array(
                 "label" => $this->__("Home Page"),
@@ -35,8 +35,8 @@ class S3Now_CustomORM_IndexController extends Mage_Core_Controller_Front_Action{
 		   ));
 
       $breadcrumbs->addCrumb("orm test", array(
-                "label" => $this->__("ORM Test"),
-                "title" => $this->__("ORM Test")
+                "label" => $this->__("ORM Test View"),
+                "title" => $this->__("ORM Test View")
 		   ));
 
       $this->renderLayout();

@@ -8,5 +8,13 @@
       <block type="customorm/index" name="customorm_index" template="customorm/index.phtml"/>   
     </reference>   
   </customorm_index_index>   
+  <customorm_index_view>   
+    <reference name="root">   
+      <action method="setTemplate"><template>page/1column.phtml</template></action>   
+    </reference>   
+    <reference name="content">   
+      <block type="customorm/index" name="customorm_index_view" template="customorm/view.phtml"/>   
+    </reference>   
+  </customorm_index_view>   
 </layout>   
 	
