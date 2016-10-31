@@ -22,3 +22,15 @@ Here is an example:
 
 
 The frontend page used for Magento was simply the contact_tests.php file provided by the original test.
+
+Screenshots:
+Contact Tests View (index controller):
+https://www.dropbox.com/s/gmc8vf3khrssl2p/Selection_043.png?dl=0
+
+Single User View (view?id=1):
+https://www.dropbox.com/s/prrnwh6nw3h5zhv/Selection_042.png?dl=0
+
+Database Results after test:
+https://www.dropbox.com/s/z04qqaqxkiyqk3q/Selection_044.png?dl=0
+
+
