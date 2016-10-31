@@ -1,7 +1,14 @@
-<?PHP
-require_once("AbstractModel.php");
-require_once("Contact.php");
+<?php
 ini_set("display_errors", true);
+/**
+ * Bootstrap and connect to our database
+ **/
+require_once("../db/Database.php");
+$db = new Database();
+$db->conn();
+
+require_once("../db/models/AbstractModel.php");
+require_once("../db/models/Contact.php");
 
 $contact = new Contact();
 
