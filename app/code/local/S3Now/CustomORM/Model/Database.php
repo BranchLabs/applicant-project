@@ -20,7 +20,7 @@ class Database {
    */
   protected function _getConfig() {
     try {
-      $config_contents = file_get_contents("../config/db.json");
+      $config_contents = file_get_contents(dirname(__FILE__) . "/config/db.json");
     } catch (Exception $e) {
       // Normally we'd tie into our Framework and do something clever here,
       // but no framework so let's just throw the error
