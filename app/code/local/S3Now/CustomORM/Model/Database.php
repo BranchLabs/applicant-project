@@ -24,7 +24,7 @@ class Database {
     } catch (Exception $e) {
       // Normally we'd tie into our Framework and do something clever here,
       // but no framework so let's just throw the error
-      throw($e);
+      throw $e;
     }
 
     return json_decode($config_contents);
@@ -99,11 +99,11 @@ class Database {
       $db = new PDO($conn_string, $config->username, $config->password);
     } catch (PDOException $e) {
       // Failed to connect, handle this in Framework
-      $throw ($e);
+      throw $e;
     } catch (Exception $e) {
       // Normally we'd tie into our Framework and do something clever here,
       // but no framework so let's just throw the error
-      throw($e);
+      throw $e;
     }
 
     if (!$db) { // be absolutely sure we have connected
