@@ -51,7 +51,6 @@ class AbstractModel {
       implode(",", $params['keys']),
       implode(",", $this->_insertValuesPDO($params['values'])),
       implode(",", $this->_onDuplicateKeyUpdates($params['keys']))), $params['values']);
-
   }
 
 
@@ -131,7 +130,7 @@ class AbstractModel {
   public function load($id) {
     if (!isset($id)) throw new Exception("ID is required to fetch a record"); // safe assumption
 
-    $query = "SELECT * from %s where %s=?";
+    $query = "SELECT * FROM %s WHERE %s=?";
     $record = Database::read(sprintf($query, $this->_table, $this->_pk), array($id));
     if ($record) {
       $this->_record = $record;
