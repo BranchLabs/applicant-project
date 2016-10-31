@@ -3,9 +3,10 @@
 /**
  * Database class handles, all basic DB functionality, including
  * connections, queries, etc
- * @package default
- * @subpackage default
- * @author Me
+ * @package Database
+ * @author David Cajio
+ *
+ * TODO: Implement Log class and functionality (bells and whistles)
  */
 class Database {
   protected static $_db; // Database connection
@@ -46,10 +47,11 @@ class Database {
    * @return string
    * @author David Cajio
    */
-  public static function prepare($query, $params) {
+  public static function prepare($query) {
+    // TODO:
+    // In a REAL ORM this should be using transactions
     $db = Database::getDB();
     $stmt = $db->prepare($query);
-    $stmt->execute($params);
     return $stmt;
   }
 
@@ -60,7 +62,8 @@ class Database {
    * @author David Cajio
    */
   public static function read($query, $params = array()) {
-    $stmt = Database::prepare($query, $params);
+    $stmt = Database::prepare($query);
+    $stmt->execute($params);
     return $stmt->fetch(PDO::FETCH_ASSOC); // based on requirements we are only ever fetching a single row
   }
 
@@ -72,12 +75,15 @@ class Database {
    * @author David Cajio
    */
   public function write($query, $params = array()) {
-    $stmt = Database::prepare($query, $params);
+    $stmt = Database::prepare($query);
     $result = $stmt->execute($params);
 
     // we can check the value of $result and do some error handling
     // but that is beyond the scope of this excercise, just return the value
-    return $result;
+    //
+    // Note: Using lastInsertId isn't a good solution, but this is an 'excercise' not a real
+    // ORM and there is a time-crunch here so in this case, it's "good enough"
+    return array("result" => $result, "id" => Database::getDB()->lastInsertId());
   }
 
   /**

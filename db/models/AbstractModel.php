@@ -25,69 +25,64 @@ class AbstractModel {
    * @author David Cajio
    */
   public function save() {
-    // Modified to use ON DUPLICATE KEY UPDATE
-    // Especially since it makes it easier than checking for the
-    // $_pk value via code, let the DB handle it
+    // reimplemented to make things easier from an observation/user practice
+    // so that an exact query can be seen and the result observed
     //
-    // This is acceptable because the requirements specifically state
-    // composite primary keys will not need to be used and all models use
-    // a single primary key
-    //
-    /*
-    if (!$this->_record['id']) {
+    // Also, the test did specify: "Should run an UPDATE query", something
+    // that was originally missed
+    if (!array_key_exists($this->_pk, $this->_record)) {
       // insert the record
-      $this->_insert();
+      return $this->_insert();
     } else {
       // update the record
-      $this->_update();
+      return $this->_update();
     }
-     */
+  }
 
-    $query = "INSERT INTO `%s` (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s";
+  /**
+   * Runs an insert for a new record
+   *
+   * @return boolean
+   * @author David Cajio
+   */
+  public function _insert() {
+    $query = "INSERT INTO `%s` (%s) VALUES (%s)";
     $params = $this->_getPreppedParams();
 
-    // since this is a simple ORM, just return the boolean value
-    return Database::write(sprintf($query, $this->_table,
+    $parsed = sprintf($query, $this->_table,
       implode(",", $params['keys']),
-      implode(",", $this->_insertValuesPDO($params['values'])),
-      implode(",", $this->_onDuplicateKeyUpdates($params['keys']))), $params['values']);
-  }
+      implode(",", $params['tokens']));
 
+    // since this is a simple ORM, just return the boolean value
+    $result = Database::write($parsed, $params['writeable']);
 
-  /**
-   * Returns an array of ?'s based on the count of the values
-   * array provided
-   *
-   * @return array
-   * @author David Cajio
-   */
-  private function _insertValuesPDO($arr) {
-    $size = count($arr);
-    $insert_values = new SplFixedArray($size);
-
-    for ($x=0 ; $x<$size ; $x++) {
-      $insert_values[$x] = "?";
+    if ($result['result'] && $result['id'] > 0) {
+      $this->_record[$this->_pk] = $result['id'];
     }
 
-    print_r($insert_values);
-    return $insert_values->toArray();
+    return $result['result'];
   }
 
   /**
-   * Formats SQL for on duplicate key update
+   * Updates a record in the DB
    *
-   * @return string
+   * @return boolean
    * @author David Cajio
    */
-  private function _onDuplicateKeyUpdates($keys) {
-    $result = array();
+  public function _update() {
+    $query = "UPDATE `%s` SET %s WHERE `%s`=%d";
+    $params = $this->_getPreppedParams();
 
-    // Cycle the keys and give them SQL friendly values
-    foreach ($keys as $_key) {
-      $result[] = $_key . "=VALUES(" . $_key . ")";
-    }
+    $parsed = sprintf($query, $this->_table,
+      implode(",", $params['update_tokens']),
+      $this->_pk,
+      $this->_record[$this->_pk]
+    );
 
-    return $result;
+    // since this is a simple ORM, just return the boolean value
+    $result = Database::write($parsed, $params['writeable']);
+
+    return $result['result'];
   }
 
   /**
@@ -105,9 +100,31 @@ class AbstractModel {
     // Second we need just the keys
     $params['keys'] = array();
 
+    // Thirdly setup tokens for PDO
+    $params['tokens'] = array();
+
+    // if we need to run an update
+    $params['update_tokens'] = array();
+
+    // What is allowed to be written
+    $params['writeable'] = array();
+
+    // setup an array that we can access to create SQL statements
+    //
+    // this could be much cleaner, but for our simplistic ORM it serves it's purpose
     foreach ($this->_record as $_key => $_value) {
-      $params['values'][] = $_value;
-      $params['keys'][] = "`" . $_key . "`";
+      // if ($_key !== $this->_pk) { // never update the primary key
+      // Apparently, according to the test this is allowed, though this is highly
+      // discouraged by all other ORMS I know of as it can lead to accidentally overwriting
+      // the wrong record
+      //
+      // Since the exercise wants it however, we'll add it back in
+        $params['values'][] = $_value;
+        $params['tokens'][] = ":" . $_key;
+        $params['keys'][] = "`" . $_key . "`";
+        $params['update_tokens'][] = "`" . $_key . "` = :" . $_key;
+        $params['writeable'][$_key] = $_value;
+      // }
     }
 
     return $params;
@@ -130,7 +147,10 @@ class AbstractModel {
   public function load($id) {
     if (!isset($id)) throw new Exception("ID is required to fetch a record"); // safe assumption
 
-    $query = "SELECT * FROM %s WHERE %s=?";
+    // First clear our record, even on a fail we don't want an old record sitting around
+    $this->_record = array();
+
+    $query = "SELECT * FROM `%s` WHERE `%s`=?";
     $record = Database::read(sprintf($query, $this->_table, $this->_pk), array($id));
     if ($record) {
       $this->_record = $record;
