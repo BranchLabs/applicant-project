@@ -3,14 +3,45 @@ namespace BruceCastro\BLApplicant\Block;
  
 class Contact extends \Magento\Framework\View\Element\Template
 {
-	protected function _prepareLayout()
+	protected $messageManager;
+	protected $contactFactory;
+	protected $contactId;
+
+	public function __construct(
+		\Magento\Framework\View\Element\Template\Context $context,
+		\Magento\Framework\Message\ManagerInterface $messageManager,
+		\BruceCastro\BLApplicant\Model\ContactFactory $contactFactory )
 	{
-	    $this->setMessage('Hello');
-	    $this->setName($this->getRequest()->getParam('name'));
+		$this->messageManager = $messageManager;
+		$this->contactFactory = $contactFactory;
+		parent::__construct($context);
+
+	}
+
+	protected function _prepareLayout() {
+
+	    $this->contactId = $this->getRequest()->getParam('id');
+
 	}
 	
-    public function getContactList()
-    {
-        return 'This is the Contact List';
+    public function getContact() {
+
+		if(isset($this->contactId)) {
+    		$contact = $this->contactFactory->create();
+	    	$contact->load($this->contactId);
+
+	    	if(!empty($contact->getData())) {
+	    		return $contact;
+	    	}
+	    	else {
+	    		$this->messageManager->addErrorMessage('No contact found with ID: ' . $this->contactId);
+	    	}
+	    }
+	    else {
+	    	$this->messageManager->addErrorMessage('No ID specified.');
+	    }
+
+	    return false;
+
     }
 }
