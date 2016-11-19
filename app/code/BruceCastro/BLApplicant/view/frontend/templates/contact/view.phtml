@@ -1,0 +1,24 @@
+<h1>Contact Information</h1>
+<?php
+	$contact = $this->getContact();
+
+	if(!$contact){
+		return;
+	}
+?>
+
+<ul>
+
+<li>
+<strong>ID: </strong> <?php echo $contact->getData('id'); ?>
+</li>
+
+<li>
+<strong>Name:</strong> <?php echo $contact->getData('name'); ?>
+</li>
+
+<li>
+<strong>Email:</strong> <?php echo $contact->getData('email'); ?>
+</li>
+
+</ul>
