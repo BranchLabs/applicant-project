@@ -53,3 +53,16 @@ If you have extra time, feel free to add extra bits of polish.
 ## Installation
 
 Rename the Config.php.dist file to Config.php and supply your correct database credentials
+
+## Testing out the MVC
+
+1. Rename the yii2-mvc/db.php.dist file to yii2-mvc/db.php and supply your correct database credentials
+
+2. From the yii2-mvc root directory, run the following commands:
+    
+    $ php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
+    $ php yii migrate
+
+3. Start web server:
+
+    $ php yii serve
