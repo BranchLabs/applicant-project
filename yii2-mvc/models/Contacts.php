@@ -14,14 +14,17 @@ use Yii;
  *
  * @property User $owner
  */
-class Contacts extends \yii\db\ActiveRecord
+class Contacts extends AbstractModel
 {
+    protected static $_table   = "contacts";
+    protected static $_pk      = "id";
+    
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'contacts';
+        return static::$_table;
     }
 
     /**
@@ -33,7 +36,6 @@ class Contacts extends \yii\db\ActiveRecord
             [['owner_id'], 'required'],
             [['owner_id'], 'integer'],
             [['name', 'email'], 'string', 'max' => 255],
-            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['owner_id' => 'id']],
         ];
     }
 

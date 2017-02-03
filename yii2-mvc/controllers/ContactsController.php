@@ -68,7 +68,7 @@ class ContactsController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->owner_id = \Yii::$app->user->getId();
             $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getAttribute('id')]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -87,7 +87,7 @@ class ContactsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getAttribute('id')]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -117,7 +117,8 @@ class ContactsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Contacts::findOne($id)) !== null) {
+        $condition = ['id' => $id, 'owner_id' => \Yii::$app->user->getId()];
+        if (($model = Contacts::findOne($condition)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
