@@ -1,0 +1,7 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}BranchLabs Applicant Project
+<#if licenseLast??>
+${licenseLast}
+</#if>
