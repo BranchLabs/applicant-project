@@ -48,6 +48,8 @@ Application guidelines:
 If you have extra time, feel free to add extra bits of polish.
 
 
+# Important
+
 ## Installation
 
 Rename the Config.php.dist file to Config.php and supply your correct database credentials
