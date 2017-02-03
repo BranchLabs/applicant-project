@@ -1,7 +1,9 @@
 <?php
+
 require_once("./AbstractModel.php");
-Class Contact extends AbstractModel
+
+class Contact extends AbstractModel
 {
-	protected $_table = "contacts";
-	protected $_pk	  = "id";
+    protected $_table   = "contacts";
+    protected $_pk      = "id";
 }
