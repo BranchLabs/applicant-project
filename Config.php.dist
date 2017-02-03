@@ -1,0 +1,18 @@
+<?php
+
+/*
+ * BranchLabs Applicant Project
+ */
+
+/**
+ * Description of Config
+ *
+ * @author Awoyo Oluwatoyin
+ */
+class Config
+{
+    const DB_HOST = 'YOUR_HOST'; // localhost
+    const DB_USER = 'YOUR_DB_USER';
+    const DB_PASS = 'YOUR_DB_USER_PASSWORD';
+    const DB_NAME = 'YOUR_DATABASE_NAME';
+}

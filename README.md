@@ -46,3 +46,8 @@ Application guidelines:
 * Must use the Contact model shown above to load the record.
 
 If you have extra time, feel free to add extra bits of polish.
+
+
+## Installation
+
+Rename the Config.php.dist file to Config.php and supply your correct database credentials
