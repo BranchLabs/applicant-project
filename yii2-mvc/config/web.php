@@ -14,10 +14,6 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
-        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -38,14 +34,27 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+    ],
+    'modules' => [
+        'user' => [
+            'class' => 'dektrium\user\Module',
+            'enableUnconfirmedLogin' => true,
+            'enableGeneratingPassword' => false,
+            'confirmWithin' => 21600,
+            'cost' => 12,
+            'mailer' => [
+                'sender'                => 'no-reply@myhost.com', // or ['no-reply@myhost.com' => 'Sender name']
+                'welcomeSubject'        => 'Welcome to BranchLabs Applicant Project: Designed by Awoyo Oluwatoyin',
+                'confirmationSubject'   => 'BranchLabs Applicant Project: Account Confirmation'
+            ],
+            'admins' => ['admin']
+        ],
     ],
     'params' => $params,
 ];
