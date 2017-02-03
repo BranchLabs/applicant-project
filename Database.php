@@ -34,11 +34,11 @@ abstract class Database
      */
     protected static function getDb()
     {
-        if (!self::$_db) {
-            self::_initDb();
+        if (!static::$_db) {
+            static::_initDb();
         }
         
-        return self::$_db;
+        return static::$_db;
     }
     
     /**
@@ -50,7 +50,7 @@ abstract class Database
     {
         try {
             $dsn = sprintf('mysql:host=%s;dbname=%s', Config::DB_HOST, Config::DB_NAME);
-            self::$_db = new PDO($dsn, Config::DB_USER, Config::DB_PASS);
+            static::$_db = new PDO($dsn, Config::DB_USER, Config::DB_PASS);
         } catch (PDOException $e) {
             throw new Exception('Failed to connect to database: ' . $e->getMessage());
         }
@@ -64,7 +64,7 @@ abstract class Database
      */
     protected static function prepare($query)
     {
-        $db = self::getDb();
+        $db = static::getDb();
         $stmt = $db->prepare($query);
         return $stmt;
     }
@@ -79,14 +79,14 @@ abstract class Database
      */
     public static function write($query, $params = [])
     {
-        $stmt = self::prepare($query);
+        $stmt = static::prepare($query);
         $result = $stmt->execute($params);
         
         if (!$result) {
             throw new Exception('An error occured during save');
         }
         
-        self::$_lastInsertId = self::getDb()->lastInsertId();
+        static::$_lastInsertId = static::getDb()->lastInsertId();
         return $result;
     }
  
@@ -99,7 +99,7 @@ abstract class Database
      */
     public static function load($query, $params = [])
     {
-        $stmt = self::prepare($query);
+        $stmt = static::prepare($query);
         $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
