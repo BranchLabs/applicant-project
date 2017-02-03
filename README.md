@@ -60,6 +60,7 @@ Rename the Config.php.dist file to Config.php and supply your correct database c
 
 2. From the yii2-mvc root directory, run the following commands:
     
+    $ composer install
     $ php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
     $ php yii migrate
 
