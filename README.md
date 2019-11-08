@@ -1,6 +1,6 @@
 # BranchLabs Applicant Project
 
-The BranchLabs applicant project involves implementing a basic ORM in PHP and then integrating it with Magento. Yes, you'll be duplicating functionality already provided by Magento, but that's okay.
+The BranchLabs applicant project involves implementing a basic ORM in PHP and then integrating it with a framework. Yes, you may be duplicating functionality already provided by your framework of choice, but that's okay.
 
 The project generally takes folks around 4 hours.
 
@@ -41,9 +41,9 @@ You will need to make database calls in these methods. Please use the PHP MySQL 
 
 Subjects tested:
 * MVC
-* Magento Exposure
+* Framework Exposure
 
-Using Magento 1 or 2, incorporate the abstract model into a simple application. Like mentioned above, even though Magento already has an ORM, try integrating this simple one with Magento and using it too. Feel free to rename the classes to make them work better within Magento.
+Using a framework of your choice, incorporate the abstract model into a simple application. Like mentioned above, even if your framework already has an ORM, try integrating this simple one with it and using it instead. Feel free to rename the classes to make them work better within your Framework.
 
 Application guidelines:
 * Must have a URL where a contact's information is visible—something like example.com/contact/view/id/[some_id]
