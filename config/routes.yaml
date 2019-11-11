@@ -1,0 +1,19 @@
+index:
+    path: /
+    controller: App\Controller\Index\IndexAction
+
+new_contact:
+    path: /contact/new
+    controller: App\Controller\Contact\NewContactAction
+
+edit_contact:
+    path: /contact/{id}/edit
+    controller: App\Controller\Contact\EditContactAction
+    requirements:
+        id: '([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}'
+
+delete_contact:
+    path: /contact/{id}/delete
+    controller: App\Controller\Contact\DeleteContactAction
+    requirements:
+        id: '([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}'

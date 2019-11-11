@@ -1,0 +1,55 @@
+version: '3.7'
+
+volumes:
+    database:
+        driver: local
+
+networks:
+    default:
+        ipam:
+            driver: default
+            config:
+                - subnet: ${DOCKER_SUBNET}
+
+services:
+    mariadb:
+        image: mariadb:10.3
+        command:
+            --max_allowed_packet=1073741824
+            --innodb_log_file_size=1073741824
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        volumes:
+            - database:/var/lib/mysql
+        ports:
+            - ${DOCKER_GATEWAY_IP}:3306:3306
+    php-fpm:
+        image: triplebits/php:7.3-fpm
+        env_file: .env
+        volumes:
+            - .:/var/www
+    php:
+        image: triplebits/php:7.3-cli
+        env_file: .env
+        volumes:
+            - .:/var/www
+    composer:
+        image: triplebits/composer
+        env_file: .env
+        volumes:
+            - .:/var/www
+    nginx:
+        image: triplebits/nginx
+        tty: true
+        volumes:
+            - .:/var/www
+            - ./docker/nginx/etc/nginx/sites-enabled:/etc/nginx/sites-enabled:ro
+        ports:
+            - ${DOCKER_GATEWAY_IP}:80:80
+            - ${DOCKER_GATEWAY_IP}:443:443
+        depends_on:
+            - mariadb
+            - php-fpm

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Book - Edit {{ contact.fullName }}{% endblock %}
+
+{% block body %}
+    <div class="row mt-5 mb-5">
+        <div class="col-6 text-right">
+            <a href="{{ url('index') }}" class="btn btn-primary">Contact Listing</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.surname) }}
+            {{ form_row(form.email) }}
+            <div class="row mt-3">
+                <div class="col-6 text-right">
+                    <button type="submit" class="btn btn-primary">{{ 'save'|capitalize }}</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

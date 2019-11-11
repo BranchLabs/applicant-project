@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Book - Contacts{% endblock %}
+
+{% block body %}
+    <div class="row mt-5 mb-5">
+        <div class="col-6 text-right">
+            <a href="{{ url('new_contact') }}" class="btn btn-primary">New Contact</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.fullName }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>
+                            <a href="{{ url('edit_contact', {'id': contact.id}) }}">Edit</a>
+                            |
+                            <a href="{{ url('delete_contact', {'id': contact.id}) }}">Delete</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">There are no contacts to show</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
